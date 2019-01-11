@@ -1,0 +1,3 @@
+InstagramApi
+python-twitter
+requests
