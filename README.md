@@ -18,4 +18,5 @@ Get images from Reddit and upload to Instagram and Twitter
 - Type `python redins.py` or `python3 redins.py`
 - Enter the number of files to be uploaded
 
-#### How to JSON of a website
+#### How to download JSON of a website
+To be filled
