@@ -7,6 +7,7 @@ import time as __time
 import twitter
 from JSONs import *
 from caps import *
+import moviepy
 
 user = ""  # Enter Instagram username
 passw = ""  # Add Instagram password
@@ -18,23 +19,25 @@ access_token_secret = ""  # Add twitter
 
 img = []
 
+curr_dir = __os.path.dirname(__file__)
+
 
 def check_folder():
 
     try:
-        if not __os.path.exists(path.join(path.dirname(__file__), red_media)):
-            __os.mkdir(path.join(path.dirname(__file__), red_media))
+        if not __os.path.exists(__os.path.join(curr_dir, 'red_media')):
+            __os.mkdir(__os.path.join(curr_dir, 'red_media'))
             return True
         return True
-    except:
+    except Exception:
         return False
 
 
 def get_links(__JSON):
     global img
-    file = open(path.join(path.dirname(__file__), __JSON)
-    meme=json.loads(file.read())
-    n=meme['data']['dist']
+    file = open(__os.path.join(curr_dir, __JSON))
+    meme = json.loads(file.read())
+    n = meme['data']['dist']
 
     for i in range(n):
         img.append(meme['data']['children'][i]['data']['preview']['images'][0]['source']['url'])
@@ -46,13 +49,14 @@ def get_links(__JSON):
 def write_meme():
     global img
 
-    memes={'data': '[]'}
-    memes['data']=img
+    memes = {'data': '[]'}
+    memes['data'] = img
 
-    file=open('meme.txt', 'w+')
-    data=json.dumps(memes)
-    file.write(data)
-    file.close()
+    for i in JSONs:
+        file = open(f'{i}.txt', 'w+')
+        data = json.dumps(memes)
+        file.write(data)
+        file.close()
 
     print("Wrote json")
 
@@ -60,27 +64,28 @@ def write_meme():
 def dload(JSON):
     get_links(JSON)
     write_meme()
-    file=open('meme.txt')
-    data=file.read()
-    data=json.loads(data)
+    file = open('meme.txt')
+    data = file.read()
+    data = json.loads(data)
 
-    links=data['data']
+    links = data['data']
 
     if len(links) == 0:
         print("No links")
     else:
 
         if check_folder():
-            __os.chdir(path.join(path.dirname(__file__), red_media))
-            i=0
+            __os.chdir(__os.path.join(curr_dir, 'red_media'))
+            i = 0
             print(__os.getcwd())
             for link in links:
                 try:
                     print(link)
-                    link=link.replace('amp;', '')
-                    f=__requests.get(link)
+                    link = link.replace('amp;', '')
+                    f = __requests.get(link)
 
-                    m_file=open(path.join(path.dirname(__file__), red_media, f'{i}.jpg'), 'wb')
+                    m_file = open(__os.path.join(__os.path.dirname(
+                        __file__), 'red_media', f'{i}.jpg'), 'wb')
 
                     for chunk in f.iter_content(100000):
                         m_file.write(chunk)
@@ -96,19 +101,20 @@ def dload(JSON):
 
 
 def uload(num):
-    i=__ig(user, passw)
+    i = __ig(user, passw)
     i.login()
 
-    a=twitter.Api(consumer_key=consumer_key, consumer_secret=consumer_secret,
-                    access_token_key=access_token_key, access_token_secret=access_token_secret)
+    a = twitter.Api(consumer_key=consumer_key, consumer_secret=consumer_secret,
+                    access_token_key=access_token_key,
+                    access_token_secret=access_token_secret)
     # __os.chdir('\\red_media')
 
-    dirs=__os.listdir(path.join(path.dirname(__file__), red_media))
+    dirs = __os.listdir(__os.path.join(curr_dir, 'red_media'))
 
     for j in range(num):
         try:
-            files=__random.choice(dirs)
-            files=path.join(path.dirname(__file__), red_media, files)
+            files = __random.choice(dirs)
+            files = __os.path.join(curr_dir, 'red_media', files)
             i.uploadPhoto(files, caption=__random.choice(cap))
             print("insta upload")
             a.PostUpdate(__random.choice(caps), files)
@@ -125,13 +131,12 @@ def uload(num):
 
 if __name__ == '__main__':
 
-    __os.chdir(path.join(path.dirname(__file__))
-
     if check_folder():
+        __os.chdir(__os.path.join(curr_dir, 'red_media'))
         for j in JSONs:
             get_links(j)
             write_meme()
             dload(j)
             uload(input("Enter the number of files to be uploaded: "))
     else:
-        print("Error creating file")
+        print("Error has occured in creating file")
