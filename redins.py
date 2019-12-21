@@ -5,82 +5,37 @@ from InstagramAPI import InstagramAPI as __ig
 import random as __random
 import time as __time
 import twitter
+from JSONs import *
+from caps import *
+import moviepy
 
-user = "" ##Enter Instagram username
-passw = "" ##Add Instagram password
+user = ""  # Enter Instagram username
+passw = ""  # Add Instagram password
 
-consumer_key="" ##Add twitter consumer key
-consumer_secret="" ##Add twitter consumer secret key
-access_token_key=""#Add twitter 
-access_token_secret=""##Add twitter
+consumer_key = ""  # Add twitter consumer key
+consumer_secret = ""  # Add twitter consumer secret key
+access_token_key = ""  # Add twitter
+access_token_secret = ""  # Add twitter
 
+img = []
 
-##Edit captions named cap1, cap2, cap3 for Instagram
-##Edit captions named cap11, cap22, cap33 for Twitter
-cap1 = """Follow @einteresting
-        .
-        .
-        .
-        .
-        .
-        #dankmemes #memes #dank #meme #funny #funnymemes #lol
-        #edgymemes #lmao #memesdaily #dankmeme #offensivememes
-        #comedy #offensive #follow #like #funnyvideos #fortnitememes
-        #haha #oof
-        """
+curr_dir = __os.path.dirname(__file__)
 
-cap2 = """Follow @einteresting
-        .
-        .
-        .
-        .
-        #meme #memes #funny #dankmemes #dank #lol
-        #memesdaily #lmao #funnymemes #follow
-        #fortnite #like #edgy #dankmeme #edgymemes
-        #comedy #cringe #humor #funnyvideos #lmfao
-        #instagram #hilarious #oof #savage"""
-
-cap3 = """Follow @einteresting
-        .
-        .
-        .
-        .
-        .
-        #laugh #gaming #minecraft #cancer #music #f #funnymeme #instagood #kpop #edgymeme #love #roblox #joke #viral #lit #memepage #ifunny #lilpump #rofl #life #donaldtrump
-        """
-cap4 = """Follow @einteresing
-        .
-        .
-        .
-        .
-        #funny #funnymeme #funnymemes #memes #meme #funnytext #funnyvideos
-        #hilarious #crazy #humor #epic #instafun
-        """
-cap = [cap1, cap2, cap3, cap4]
-
-cap11 = "Follow @E__interesting for more #funny #lol #memes #follow"
-cap22 = "Follow @E__interesting for more #follow #dankmemes #reddit"
-cap33= "Follow @E__interesting for more #lmao #edgymemes #comedy #retweet"
-caps = [cap11,cap22,cap33]
-
-
-img=[]
 
 def check_folder():
-    
+
     try:
-        if not __os.path.exists(f'{__os.getcwd()}\\red_media'):
-            __os.mkdir(f'{__os.getcwd()}\\red_media')
+        if not __os.path.exists(__os.path.join(curr_dir, 'red_media')):
+            __os.mkdir(__os.path.join(curr_dir, 'red_media'))
             return True
         return True
-    except:
+    except Exception:
         return False
 
-hashh = '123'
 
-def get_links():
+def get_links(__JSON):
     global img
-    file = open(f'{__os.getcwd()}\\meme.json')
+    file = open(__os.path.join(curr_dir, __JSON))
     meme = json.loads(file.read())
     n = meme['data']['dist']
 
@@ -91,22 +46,23 @@ def get_links():
     file.close()
 
 
-
 def write_meme():
     global img
 
-    memes = {'data':'[]'}
+    memes = {'data': '[]'}
     memes['data'] = img
 
-    file = open('meme.txt', 'w+')
-    data = json.dumps(memes)
-    file.write(data)
-    file.close()
+    for i in JSONs:
+        file = open(f'{i}.txt', 'w+')
+        data = json.dumps(memes)
+        file.write(data)
+        file.close()
 
     print("Wrote json")
 
-def dload():
-    get_links()
+
+def dload(JSON):
+    get_links(JSON)
     write_meme()
     file = open('meme.txt')
     data = file.read()
@@ -114,28 +70,29 @@ def dload():
 
     links = data['data']
 
-    if len(links)==0:
+    if len(links) == 0:
         print("No links")
     else:
 
         if check_folder():
-            __os.chdir(f'{__os.getcwd()}\\red_media')
-            i=0
+            __os.chdir(__os.path.join(curr_dir, 'red_media'))
+            i = 0
             print(__os.getcwd())
             for link in links:
                 try:
                     print(link)
-                    link = link.replace('amp;','')
+                    link = link.replace('amp;', '')
                     f = __requests.get(link)
 
-                    m_file = open(f'{__os.getcwd()}\\red_media\\{i}.jpg', 'wb')
+                    m_file = open(__os.path.join(__os.path.dirname(
+                        __file__), 'red_media', f'{i}.jpg'), 'wb')
 
                     for chunk in f.iter_content(100000):
                         m_file.write(chunk)
                     m_file.close()
                     print("Downloaded")
                     __os.chdir('..')
-                    i+=1
+                    i += 1
                 except Exception as e:
                     print(e)
 
@@ -147,43 +104,39 @@ def uload(num):
     i = __ig(user, passw)
     i.login()
 
+    a = twitter.Api(consumer_key=consumer_key, consumer_secret=consumer_secret,
+                    access_token_key=access_token_key,
+                    access_token_secret=access_token_secret)
+    # __os.chdir('\\red_media')
 
-    a = twitter.Api(consumer_key=consumer_key, consumer_secret=consumer_secret, access_token_key=access_token_key, access_token_secret=access_token_secret)
-    #__os.chdir('\\red_media')
-
-    dirs = __os.listdir(f'{__os.getcwd()}\\red_media')
-
-
+    dirs = __os.listdir(__os.path.join(curr_dir, 'red_media'))
 
     for j in range(num):
         try:
             files = __random.choice(dirs)
-            files = f'{__os.getcwd()}\\red_media\\' + files
+            files = __os.path.join(curr_dir, 'red_media', files)
             i.uploadPhoto(files, caption=__random.choice(cap))
             print("insta upload")
             a.PostUpdate(__random.choice(caps), files)
-            
+
             print("Uploaded..")
             __os.remove(files)
             __time.sleep(10)
         except Exception as e:
             print("Error occured {}" .format(str(e)))
-            
-        
 
     i.logout()
     print("Logged out")
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
 
-    __os.chdir(f'{__os.getcwd()}')
-
-    
     if check_folder():
-        get_links()
-        write_meme()
-        dload()
-        uload(input("Enter the number of files to be uploaded: "))
+        __os.chdir(__os.path.join(curr_dir, 'red_media'))
+        for j in JSONs:
+            get_links(j)
+            write_meme()
+            dload(j)
+            uload(input("Enter the number of files to be uploaded: "))
     else:
-        print("Error creating file")
+        print("Error has occured in creating file")
