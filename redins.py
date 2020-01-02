@@ -8,6 +8,7 @@ import twitter
 from JSONs import *
 from caps import *
 import moviepy
+import facebook
 
 user = ""  # Enter Instagram username
 passw = ""  # Add Instagram password
@@ -16,6 +17,15 @@ consumer_key = ""  # Add twitter consumer key
 consumer_secret = ""  # Add twitter consumer secret key
 access_token_key = ""  # Add twitter
 access_token_secret = ""  # Add twitter
+
+
+##For Facebook
+user_access_token="" ## Add your (short-lived) user access token.You dont need this if you have a valid long lived token
+fb_app_id="" ## Your Facebook App ID
+fb_app_secret="" ## Your Facebook app secret
+long_lived_token="" ## Add the long-lived access token(If you dont have one don't worry,run the code once and it will provide you with it)
+fb_page_id="" ## The page id of the page where you want to post the image to
+
 
 img = []
 
@@ -127,6 +137,97 @@ def uload(num):
 
     i.logout()
     print("Logged out")
+
+
+
+
+
+
+def check_user_token():
+    try:
+        print("checking user access token validity")
+        r=__requests.get(url="https://graph.facebook.com/me?access_token="+user_access_token)
+        id=r.json()["id"]
+        # print(id)
+        return True
+    except KeyError as k:
+        print("Invalid user access token.Your user access token is invalid or has expired.Please refresh your user access tokens through the Graph API Explorer.")
+        exit()
+
+
+
+
+
+
+
+def long_access_token(llt,user_access_token,fb_app_id,fb_app_secret):
+    try:
+        print("checking long lived access token")
+        r=__requests.get(url="https://graph.facebook.com/me?access_token="+llt)
+        id=r.json()["id"]
+        print("success")
+    except:
+        try:
+            print("Invalid long lived token.Your long lived user access token has expired.Exchanging your user access token with a long lived access token")
+            print("getting long lived access token")
+            r=__requests.get(url="https://graph.facebook.com/v5.0/oauth/access_token?grant_type=fb_exchange_token&client_id="+fb_app_id+"&client_secret="+fb_app_secret+"&fb_exchange_token="+user_access_token)
+            llt=r.json()["access_token"]
+            print("your long lived access token is :",llt)
+            exit()
+        except KeyError as k:
+            print("unable to get long lived access token")
+            check_user_token()
+
+
+
+
+
+
+
+
+def get_page_access_token(long_lived_token):
+    try:
+        # print(long_lived_token)
+        URL = "https://graph.facebook.com/v5.0/"+fb_page_id+"?fields=access_token&access_token="+long_lived_token
+        r= __requests.get(url=URL)
+        # print(r.json())
+        page_access_token=r.json()["access_token"]
+        return page_access_token
+    except KeyError as k:
+        print("Invalid page access token.Please check your user access tokens")
+        exit()
+
+
+
+
+
+
+
+def uload_to_facebook(num):
+
+    # check_user_token()
+    long_access_token(long_lived_token,user_access_token,fb_app_id,fb_app_secret)
+    page_access_token=get_page_access_token(long_lived_token)
+    graph=facebook.GraphAPI(access_token=page_access_token,version="3.0")
+
+    dirs = __os.listdir(__os.path.join(curr_dir, 'red_media'))
+
+    print("facebook upload")
+    for j in range(num):
+        try:
+            files = __random.choice(dirs)
+            files = __os.path.join(curr_dir, 'red_media', files)
+            photo=open(files,"rb")
+            print("posting",files)
+
+            graph.put_photo(
+                image=photo,
+                message=__random.choice(cap),
+            )
+            photo.close()
+        except Exception as e:
+                print("Error occured {}" .format(str(e)))
+
 
 
 if __name__ == '__main__':
