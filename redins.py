@@ -9,23 +9,53 @@ from JSONs import *
 from caps import *
 import moviepy
 import facebook
+import configparser
 
-user = ""  # Enter Instagram username
-passw = ""  # Add Instagram password
+# Instagram
+user = ""
+passw = ""
 
-consumer_key = ""  # Add twitter consumer key
-consumer_secret = ""  # Add twitter consumer secret key
-access_token_key = ""  # Add twitter
-access_token_secret = ""  # Add twitter
+# Twitter
+consumer_key = ""
+consumer_secret = ""
+access_token_key = ""
+access_token_secret = ""
 
 
-##For Facebook
-user_access_token="" ## Add your (short-lived) user access token.You dont need this if you have a valid long lived token
-fb_app_id="" ## Your Facebook App ID
-fb_app_secret="" ## Your Facebook app secret
-long_lived_token="" ## Add the long-lived access token(If you dont have one don't worry,run the code once and it will provide you with it)
-fb_page_id="" ## The page id of the page where you want to post the image to
+# Facebook
+user_access_token="" 
+fb_app_id="" 
+fb_app_secret="" 
+long_lived_token="" 
+fb_page_id=""
 
+
+def get_instagram_data(ig_section):
+    return ig_section['username'], ig_section['password']
+
+def get_fb_data(fb_section):
+    return fb_section['user_access_token'], fb_section['app_id'], fb_section['app_secret'], fb_section[page_id]
+
+def get_twitter_data(t_section):
+    return t_section['consumer_key'], t_section['consumer_secret'], t_section['access_token_key'], t_section['access_token_secret']
+
+def get_data():
+    """
+    Gets data from config file
+    """
+    
+    c = configparser.ConfigParser()
+    c.read('config.ini')
+
+    if c['Post']['Instagram']:
+        global user, passw
+        user, passw = get_instagram_data()
+    if c['Post']['Facebook']:
+        global user_access_token, fb_app_id, fb_app_secret, fb_page_id
+        user_access_token, fb_app_id, fb_app_secret, fb_page_id = get_fb_data()
+    if c['Post']['Twitter']:
+        global consumer_key, consumer_secret, access_token_key, access_token_secret
+        consumer_key, consumer_secret, access_token_key, access_token_secret = get_twiiter_data()
 
 img = []
 
@@ -33,7 +63,6 @@ curr_dir = __os.path.dirname(__file__)
 
 
 def check_folder():
-
     try:
         if not __os.path.exists(__os.path.join(curr_dir, 'red_media')):
             __os.mkdir(__os.path.join(curr_dir, 'red_media'))
@@ -109,14 +138,30 @@ def dload(JSON):
         else:
             raise Exception('There has been an error')
 
+def uload_to_twitter(num):
+    tweet = twitter.Api(consumer_key=consumer_key, consumer_secret=consumer_secret,
+                    access_token_key=access_token_key,
+                    access_token_secret=access_token_secret)
 
-def uload(num):
+    dirs = __os.listdir(__os.path.join(curr_dir, 'red_media'))
+
+    for j in range(num):
+        try:
+            files = __random.choice(dirs)
+            files = __os.path.join(curr_dir, 'red_media', files)
+            a.PostUpdate(__random.choice(caps), files)
+            print("Uploaded..")
+            __os.remove(files)
+            __time.sleep(10)
+        except Exception as e:
+            print("Error occured {}" .format(str(e)))
+
+
+
+def uload_to_ig(num):
     i = __ig(user, passw)
     i.login()
 
-    a = twitter.Api(consumer_key=consumer_key, consumer_secret=consumer_secret,
-                    access_token_key=access_token_key,
-                    access_token_secret=access_token_secret)
     # __os.chdir('\\red_media')
 
     dirs = __os.listdir(__os.path.join(curr_dir, 'red_media'))
@@ -127,9 +172,6 @@ def uload(num):
             files = __os.path.join(curr_dir, 'red_media', files)
             i.uploadPhoto(files, caption=__random.choice(cap))
             print("insta upload")
-            a.PostUpdate(__random.choice(caps), files)
-
-            print("Uploaded..")
             __os.remove(files)
             __time.sleep(10)
         except Exception as e:
@@ -137,9 +179,6 @@ def uload(num):
 
     i.logout()
     print("Logged out")
-
-
-
 
 
 
@@ -152,12 +191,6 @@ def check_user_token():
         return True
     except KeyError as k:
         print("Invalid user access token.Your user access token is invalid or has expired.Please refresh your user access tokens through the Graph API Explorer.")
-        exit()
-
-
-
-
-
 
 
 def long_access_token(llt,user_access_token,fb_app_id,fb_app_secret):
@@ -179,12 +212,6 @@ def long_access_token(llt,user_access_token,fb_app_id,fb_app_secret):
             check_user_token()
 
 
-
-
-
-
-
-
 def get_page_access_token(long_lived_token):
     try:
         # print(long_lived_token)
@@ -196,11 +223,6 @@ def get_page_access_token(long_lived_token):
     except KeyError as k:
         print("Invalid page access token.Please check your user access tokens")
         exit()
-
-
-
-
-
 
 
 def uload_to_facebook(num):
@@ -227,7 +249,6 @@ def uload_to_facebook(num):
             photo.close()
         except Exception as e:
                 print("Error occured {}" .format(str(e)))
-
 
 
 if __name__ == '__main__':
