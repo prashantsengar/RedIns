@@ -1,3 +1,4 @@
+import config
 import json
 import os as __os
 import requests as __requests
@@ -11,51 +12,6 @@ import moviepy
 import facebook
 import configparser
 
-# Instagram
-user = ""
-passw = ""
-
-# Twitter
-consumer_key = ""
-consumer_secret = ""
-access_token_key = ""
-access_token_secret = ""
-
-
-# Facebook
-user_access_token="" 
-fb_app_id="" 
-fb_app_secret="" 
-long_lived_token="" 
-fb_page_id=""
-
-
-def get_instagram_data(ig_section):
-    return ig_section['username'], ig_section['password']
-
-def get_fb_data(fb_section):
-    return fb_section['user_access_token'], fb_section['app_id'], fb_section['app_secret'], fb_section[page_id]
-
-def get_twitter_data(t_section):
-    return t_section['consumer_key'], t_section['consumer_secret'], t_section['access_token_key'], t_section['access_token_secret']
-
-def get_data():
-    """
-    Gets data from config file
-    """
-    
-    c = configparser.ConfigParser()
-    c.read('config.ini')
-
-    if c['Post']['Instagram']:
-        global user, passw
-        user, passw = get_instagram_data()
-    if c['Post']['Facebook']:
-        global user_access_token, fb_app_id, fb_app_secret, fb_page_id
-        user_access_token, fb_app_id, fb_app_secret, fb_page_id = get_fb_data()
-    if c['Post']['Twitter']:
-        global consumer_key, consumer_secret, access_token_key, access_token_secret
-        consumer_key, consumer_secret, access_token_key, access_token_secret = get_twiiter_data()
 
 img = []
 
@@ -225,7 +181,7 @@ def get_page_access_token(long_lived_token):
         exit()
 
 
-def uload_to_facebook(num):
+def uload_to_fb(num):
 
     # check_user_token()
     long_access_token(long_lived_token,user_access_token,fb_app_id,fb_app_secret)
@@ -254,11 +210,17 @@ def uload_to_facebook(num):
 if __name__ == '__main__':
 
     if check_folder():
-        __os.chdir(__os.path.join(curr_dir, 'red_media'))
+        config.get_data()
         for j in JSONs:
             get_links(j)
             write_meme()
             dload(j)
-            uload(input("Enter the number of files to be uploaded: "))
+            num_of_uload = input("Enter the number of files to be uploaded: ")
+            if config.IG:
+                uload_to_ig(num_of_uload)
+            if config.TWITTER:
+                uload_to_twitter(num_of_uload)
+            if config.FB:
+                uload_to_fb(num_of_uload)
     else:
         print("Error has occured in creating file")
