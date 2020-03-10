@@ -1,4 +1,5 @@
 import config
+from config import page_access_token, fb_app_id, fb_app_secret, long_lived_token, fb_page_id
 import json
 import os as __os
 import requests as __requests
@@ -59,8 +60,8 @@ def write_meme():
 def dload(JSON):
     get_links(JSON)
     write_meme()
-    file = open('meme.txt')
-    data = file.read()
+    with open(f'{JSON}.txt') as file:
+        data = file.read()
     data = json.loads(data)
 
     links = data['data']
@@ -95,9 +96,9 @@ def dload(JSON):
             raise Exception('There has been an error')
 
 def uload_to_twitter(num):
-    tweet = twitter.Api(consumer_key=consumer_key, consumer_secret=consumer_secret,
-                    access_token_key=access_token_key,
-                    access_token_secret=access_token_secret)
+    tweet = twitter.Api(consumer_key=config.consumer_key, consumer_secret=config.consumer_secret,
+                    access_token_key=config.access_token_key,
+                    access_token_secret=config.access_token_secret)
 
     dirs = __os.listdir(__os.path.join(curr_dir, 'red_media'))
 
@@ -105,7 +106,7 @@ def uload_to_twitter(num):
         try:
             files = __random.choice(dirs)
             files = __os.path.join(curr_dir, 'red_media', files)
-            a.PostUpdate(__random.choice(caps), files)
+            tweet.PostUpdate(__random.choice(caps), files)
             print("Uploaded..")
             __os.remove(files)
             __time.sleep(10)
@@ -115,7 +116,7 @@ def uload_to_twitter(num):
 
 
 def uload_to_ig(num):
-    i = __ig(user, passw)
+    i = __ig(config.user, config.passw)
     i.login()
 
     # __os.chdir('\\red_media')
@@ -184,8 +185,9 @@ def get_page_access_token(long_lived_token):
 def uload_to_fb(num):
 
     # check_user_token()
-    long_access_token(long_lived_token,user_access_token,fb_app_id,fb_app_secret)
-    page_access_token=get_page_access_token(long_lived_token)
+##    long_access_token(longlivedtoken, user_access_token,fb_app_id,fb_app_secret)
+##    page_access_token=get_page_access_token(long_lived_token)
+    
     graph=facebook.GraphAPI(access_token=page_access_token,version="3.0")
 
     dirs = __os.listdir(__os.path.join(curr_dir, 'red_media'))
@@ -204,23 +206,39 @@ def uload_to_fb(num):
             )
             photo.close()
         except Exception as e:
-                print("Error occured {}" .format(str(e)))
+                print("Error occured: {}" .format(str(e)))
 
+def start_upload():
+    print('Starting upload')
+    num_of_uload = int(input("Enter the number of files to be uploaded: "))
+    if config.IG:
+        print('Uploading to IG')
+        uload_to_ig(num_of_uload)
+    if config.TWITTER:
+        print('Uploading to Twitter')
+        uload_to_twitter(num_of_uload)
+    if config.FB:
+        print('Uploading to FB')
+        uload_to_fb(num_of_uload)
+    else:
+        print('No upload')
 
-if __name__ == '__main__':
-
+def main():
     if check_folder():
         config.get_data()
+        if len(__os.listdir('red_media'))>2:
+            start_upload()
+            return
+        
         for j in JSONs:
             get_links(j)
             write_meme()
             dload(j)
-            num_of_uload = input("Enter the number of files to be uploaded: ")
-            if config.IG:
-                uload_to_ig(num_of_uload)
-            if config.TWITTER:
-                uload_to_twitter(num_of_uload)
-            if config.FB:
-                uload_to_fb(num_of_uload)
+            start_upload()
     else:
         print("Error has occured in creating file")
+
+    
+
+if __name__ == '__main__':
+    main()        

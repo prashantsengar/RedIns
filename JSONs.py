@@ -7,4 +7,4 @@ def new_JSON(__JSON):
     JSONs.append(__JSON)
 
 
-JSONs = []
+JSONs = ['memes.json']
