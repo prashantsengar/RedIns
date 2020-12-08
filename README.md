@@ -1,6 +1,9 @@
 # RedIns
 Get images from Reddit and upload to Instagram and Twitter
 
+- Join our Telegram group via the link given [below](#community)
+- Read about it on my [blog](https://prashants.in/blog/redins-post-to-social-media-from-reddit/)
+
 
 ## Clone from repository
 `git clone https://github.com/prashantsengar/RedIns`
@@ -34,3 +37,10 @@ To get `page access token`, see this [page](https://elfsight.com/blog/2017/10/ho
 - Open `JSONs.py` and write `new_JSON('memes.json')` after line 5
 
 *Note:* Due to recent changes in Instagram's private API, Instagram posting might not work. It will be updated to use the new Graph API
+
+
+## Community 
+
+Join the Telegram group for support and contributing. If you want to contribute, joining the group helps us all a lot because you can get instant feedback.
+
+[<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/1024px-Telegram_logo.svg.png" alt="mTracker Telegram Group" width="150" height="150">](https://t.me/joinchat/INDdLhNoG-yYqLb-sf8Rlg)
