@@ -168,7 +168,8 @@ class RedIns:
             num_of_upload = max_limit
         files_to_upload = files_to_upload[:max_limit]
         print('Starting upload')
-        for file in files_to_upload:
+        for index, file in enumerate(files_to_upload):
+            print("Upload Count: ", index)
             if local_upload:
                 self.start_upload(file)
             else:
@@ -176,6 +177,8 @@ class RedIns:
                 self.start_upload(__os.path.join(curr_dir,
                                                  'red_media', '0.jpg'))
             time.sleep(self.delay)
+        self.logout()
+        print("Upload completed")
 
 
 if __name__ == '__main__':
