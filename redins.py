@@ -166,7 +166,7 @@ class RedIns:
             print("Files insufficient")
             print("Setting upload limit to ", max_limit)
             num_of_upload = max_limit
-        files_to_upload = files_to_upload[:max_limit]
+        files_to_upload = files_to_upload[:num_of_upload+1]
         print('Starting upload')
         for index, file in enumerate(files_to_upload):
             print("Upload Count: ", index)
