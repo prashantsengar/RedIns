@@ -17,7 +17,8 @@ caps = []
 cap = []
 
 
-Instagram_Caps("""Follow @einteresting
+Instagram_Caps(
+    """Follow @einteresting
         .
         .
         .
@@ -27,9 +28,11 @@ Instagram_Caps("""Follow @einteresting
         #edgymemes #lmao #memesdaily #dankmeme #offensivememes
         #comedy #offensive #follow #like #funnyvideos #fortnitememes
         #haha #oof
-        """)
+        """
+)
 
-Instagram_Caps("""Follow @einteresting
+Instagram_Caps(
+    """Follow @einteresting
         .
         .
         .
@@ -38,9 +41,11 @@ Instagram_Caps("""Follow @einteresting
         #memesdaily #lmao #funnymemes #follow
         #fortnite #like #edgy #dankmeme #edgymemes
         #comedy #cringe #humor #funnyvideos #lmfao
-        #instagram #hilarious #oof #savage""")
+        #instagram #hilarious #oof #savage"""
+)
 
-Instagram_Caps("""Follow @einteresting
+Instagram_Caps(
+    """Follow @einteresting
         .
         .
         .
@@ -49,15 +54,18 @@ Instagram_Caps("""Follow @einteresting
         #laugh #gaming #minecraft #cancer #music #f #funnymeme
         #instagood #kpop #edgymeme #love #roblox #joke #viral #lit
         #memepage #ifunny #lilpump #rofl #life #donaldtrump
-        """)
-Instagram_Caps("""Follow @einteresing
+        """
+)
+Instagram_Caps(
+    """Follow @einteresing
         .
         .
         .
         .
         #funny #funnymeme #funnymemes #memes #meme #funnytext #funnyvideos
         #hilarious #crazy #humor #epic #instafun
-        """)
+        """
+)
 
 
 Twitter_Caps("Follow @E__interesting for more #funny #lol #memes #follow")
