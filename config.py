@@ -40,4 +40,4 @@ class Config:
             if should_post is True:
                 logger.debug("Credentials:")
                 for key, value in self.credentials[module].items():
-                    logger.debug("\t", key, ": ", value)
+                    logger.debug(key, value)
