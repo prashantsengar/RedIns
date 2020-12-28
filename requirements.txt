@@ -2,3 +2,4 @@ InstagramApi
 python-twitter
 requests
 facebook-sdk
+configparser
