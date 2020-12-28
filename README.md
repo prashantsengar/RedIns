@@ -1,5 +1,5 @@
 # RedIns
-Get images from Reddit and upload to Instagram and Twitter
+Get images from Reddit and upload to Instagram, Twitter and FaceBook
 
 - Join our Telegram group via the link given [below](#community)
 - Read about it on my [blog](https://prashants.in/blog/redins-post-to-social-media-from-reddit/)
