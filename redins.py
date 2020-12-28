@@ -16,14 +16,17 @@ curr_dir = __os.path.dirname(__file__)
 
 class RedIns:
 
-    def __init__(self):
+    def __init__(self, user_agent=None):
         self.delay = 10
         self.config = Config()
         self.caption = Caption()
-        self.redpy = Redpy('web:redpy:v2.1 (by u/myusername)')
-
-        for module, status in self.config.modules.items():
-            setattr(self, module, status)
+        if user_agent:
+            self.redpy = Redpy(user_agent)
+        else:
+            self.redpy = Redpy('web:redpy:v2.1 (by u/myusername)')
+        self.instagram = self.config.modules["instagram"]
+        self.facebook = self.config.modules["facebook"]
+        self.twitter = self.config.modules["twitter"]
         self.login()
 
     def check_access_token(self, access_token):
@@ -78,7 +81,12 @@ class RedIns:
 
     def login(self):
         if self.twitter:
-            self.twitter_client = twitter.Api(**self.config.creds["twitter"])
+            tcreds = self.config.creds["twitter"]
+            self.twitter_client = twitter.Api(
+                consumer_key=tcreds["consumer_key"],
+                consumer_secret=tcreds["consumer_secret"],
+                access_token_key=tcreds["access_token_key"],
+                access_token_secret=tcreds["access_token_secret"])
         if self.instagram:
             insta_creds = self.config.creds["instagram"]
             self.instagram_client = __ig(
@@ -103,7 +111,8 @@ class RedIns:
                     access_token=page_access_token,
                     version="3.0")
             else:
-                print("Invalid Tokens Found !!!")
+                print("Invalid token found for Facebook." +
+                      "Will not post on Facebook.")
                 self.facebook = False
 
     def logout(self):
@@ -166,7 +175,7 @@ class RedIns:
             print("Files insufficient")
             print("Setting upload limit to ", max_limit)
             num_of_upload = max_limit
-        files_to_upload = files_to_upload[:num_of_upload+1]
+        files_to_upload = files_to_upload[:num_of_upload]
         print('Starting upload')
         for index, file in enumerate(files_to_upload):
             print("Upload Count: ", index)
