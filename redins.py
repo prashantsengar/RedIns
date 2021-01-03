@@ -152,10 +152,16 @@ class RedIns:
                      "twitter": self.upload_to_twitter,
                      "facebook": self.upload_to_fb}
 
-        for module, function in functions.items():
-            if getattr(self, module):
-                print(f"Uploading {file} to ", module)
-                function(file)
+        valid_apps = []
+        if self.instagram:
+            valid_apps.append("instagram")
+        if self.twitter:
+            valid_apps.append("twitter")
+        if self.facebook:
+            valid_apps.append("facebook")
+        for app in valid_apps:
+            print(f"Uploading {file} to", app)
+            functions[app](file)
 
     def main(self):
         self.redpy.createFolder()
