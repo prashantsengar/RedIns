@@ -1,56 +1,43 @@
 import configparser
+import ast
+import logging
+logger = logging.getLogger()
 
-# Instagram
-user = ""
-passw = ""
-IG = False
 
-# Twitter
-consumer_key = ""
-consumer_secret = ""
-access_token_key = ""
-access_token_secret = ""
-TWITTER = False
-
-# Facebook
-page_access_token="" 
-fb_app_id="" 
-fb_app_secret="" 
-long_lived_token="" 
-fb_page_id=""
-FB = False
-
-def get_instagram_data(ig_section):
-    return ig_section['username'], ig_section['password']
-
-def get_fb_data(fb_section):
-    return fb_section['page_access_token'], fb_section['app_id'], fb_section['app_secret'], fb_section['page_id']
-
-def get_twitter_data(t_section):
-    return t_section['consumer_key'], t_section['consumer_secret'], t_section['access_token_key'], t_section['access_token_secret']
-
-def get_data():
+class Config:
     """
-    Gets data from config file
+    Load data from config file
     """
-    
-    c = configparser.ConfigParser()
-    c.read('config.ini')
 
-    print(eval(c['Post']['Instagram']))
-    print(eval(c['Post']['Facebook']))
-    print(eval(c['Post']['Twitter']))
-    
-    if eval(c['Post']['Instagram']):
-        global user, passw, IG
-        IG = True
-        user, passw = get_instagram_data(c['Instagram'])
-    if eval(c['Post']['Facebook']):
-        global user_access_token, fb_app_id, fb_app_secret, fb_page_id, FB
-        FB = True
-        print(FB)
-        user_access_token, fb_app_id, fb_app_secret, fb_page_id = get_fb_data(c['Facebook'])
-    if eval(c['Post']['Twitter']):
-        global consumer_key, consumer_secret, access_token_key, access_token_secret, TWITTER
-        TWITTER = True
-        consumer_key, consumer_secret, access_token_key, access_token_secret = get_twitter_data(c['Twitter'])
+    def __init__(self, file='config.ini'):
+
+        c = configparser.ConfigParser()
+        c.read(file)
+
+        # self.modules - dict of social media websites to post
+        # Eg: {'instagram':True, 'facebook':False}
+        self.modules = {str(a): ast.literal_eval(b)
+                        for a, b in dict(c["post"]).items()}
+
+        # credentials for all social media profiles
+        # {'instagram':{'username':'@username', 'password':'PASSWORD'}}
+        self.credentials = dict()
+        for module, should_post in self.modules.items():
+            if should_post is True:
+                self.credentials[module] = {
+                    a: ast.literal_eval(b)
+                    for a, b in dict(c[module]).items()}
+
+        self.subreddits = ast.literal_eval(c['reddit']['subreddits'])
+        self.sub_category = ast.literal_eval(c['reddit']['category'])
+
+    def check_data(self):
+
+        print("Subreddits Loaded: ", ",".join(self.subreddits))
+        for module, should_post in self.modules.items():
+            logger.debug(
+                module, "Loaded" if should_post is True else "Not Loaded")
+            if should_post is True:
+                logger.debug("Credentials:")
+                for key, value in self.credentials[module].items():
+                    logger.debug(key, value)
