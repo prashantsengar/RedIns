@@ -5,7 +5,6 @@
 
 
 class Caption:
-
     def __init__(self):
         self.insta_caps = []
         self.twitter_caps = []
@@ -21,7 +20,8 @@ class Caption:
         self.facebook_caps.append(string)
 
     def default_add(self):
-        self.add_insta_caps("""Follow @einteresting
+        self.add_insta_caps(
+            """Follow @einteresting
                 .
                 .
                 .
@@ -31,9 +31,11 @@ class Caption:
                 #edgymemes #lmao #memesdaily #dankmeme #offensivememes
                 #comedy #offensive #follow #like #funnyvideos #fortnitememes
                 #haha #oof
-                """)
+                """
+        )
 
-        self.add_insta_caps("""Follow @einteresting
+        self.add_insta_caps(
+            """Follow @einteresting
                 .
                 .
                 .
@@ -42,9 +44,11 @@ class Caption:
                 #memesdaily #lmao #funnymemes #follow
                 #fortnite #like #edgy #dankmeme #edgymemes
                 #comedy #cringe #humor #funnyvideos #lmfao
-                #instagram #hilarious #oof #savage""")
+                #instagram #hilarious #oof #savage"""
+        )
 
-        self.add_insta_caps("""Follow @einteresting
+        self.add_insta_caps(
+            """Follow @einteresting
                 .
                 .
                 .
@@ -53,26 +57,29 @@ class Caption:
                 #laugh #gaming #minecraft #cancer #music #f #funnymeme
                 #instagood #kpop #edgymeme #love #roblox #joke #viral #lit
                 #memepage #ifunny #lilpump #rofl #life #donaldtrump
-                """)
-        self.add_insta_caps("""Follow @einteresing
+                """
+        )
+        self.add_insta_caps(
+            """Follow @einteresing
                 .
                 .
                 .
                 .
                 #funny #funnymeme #funnymemes #memes #meme #funnytext
                 # funnyvideos #hilarious #crazy #humor #epic #instafun
-                """)
+                """
+        )
 
         self.add_twitter_caps(
-            "Follow @E__interesting for more #funny #lol #memes #follow")
+            "Follow @E__interesting for more #funny #lol #memes #follow"
+        )
         self.add_twitter_caps(
-            "Follow @E__interesting for more #follow #dankmemes #reddit")
+            "Follow @E__interesting for more #follow #dankmemes #reddit"
+        )
         self.add_twitter_caps(
-            "Follow @E__interesting for more #edgymemes #comedy #retweet")
+            "Follow @E__interesting for more #edgymemes #comedy #retweet"
+        )
 
-        self.add_facebook_caps(
-            "Follow @SomeGuy for more #funny #lol #memes #follow")
-        self.add_facebook_caps(
-            "Follow @SomeGuy for more #follow #dankmemes #reddit")
-        self.add_facebook_caps(
-            "Follow @RandomGuy for more #edgymemes #comedy #retweet")
+        self.add_facebook_caps("Follow @SomeGuy for more #funny #lol #memes #follow")
+        self.add_facebook_caps("Follow @SomeGuy for more #follow #dankmemes #reddit")
+        self.add_facebook_caps("Follow @RandomGuy for more #edgymemes #comedy #retweet")
