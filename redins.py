@@ -148,20 +148,12 @@ class RedIns:
             print("Error occured: {}" .format(str(e)))
 
     def start_upload(self, file):
-        functions = {"instagram": self.upload_to_ig,
-                     "twitter": self.upload_to_twitter,
-                     "facebook": self.upload_to_fb}
-
-        valid_apps = []
         if self.instagram:
-            valid_apps.append("instagram")
+            self.upload_to_ig(file)
         if self.twitter:
-            valid_apps.append("twitter")
+            self.upload_to_twitter(file)
         if self.facebook:
-            valid_apps.append("facebook")
-        for app in valid_apps:
-            print(f"Uploading {file} to", app)
-            functions[app](file)
+            self.upload_to_fb(file)
 
     def main(self):
         self.redpy.createFolder()
