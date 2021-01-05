@@ -189,4 +189,7 @@ class RedIns:
 
 
 if __name__ == '__main__':
-    RedIns().main()
+    user_agent = input("Enter a user-agent of the form web:ProjectName:v1.3 (by YOUR_NAME). Leave empty to use default: ")
+    if user_agent=="":
+        user_agent = None
+    RedIns(user_agent).main()
